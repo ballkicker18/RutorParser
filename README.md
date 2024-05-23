@@ -8,13 +8,13 @@
 ## Установка
 
 Клонируйте репозиторий:
-`git clone https://github.com/ballkicker228/RutorParser`
+```git clone https://github.com/ballkicker228/RutorParser```
 Перейдите в папку:
-`cd RutorParser`
+```cd RutorParser```
 Установите зависимости:
-`./install.sh`
+```./install.sh```
 Теперь можно запускать скрипт:
-`./start.sh`
+```./start.sh```
 
 ## TODO
 
