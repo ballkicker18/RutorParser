@@ -4,6 +4,7 @@ import config
 from config import logger
 from datetime import datetime
 from furl import furl
+import tempfile
 
 class Torrent:
     def __init__(self, name: str, date: datetime, size: str, peers: list, link: str, links: list):
@@ -107,6 +108,17 @@ class Rutor:
         resp = self.get_html(self.current_link.url)
         results = self.get_results_from_resp(resp)
         return results
+
+    def check_torrent_page(self, torrent: Torrent, tempdir: tempfile.TemporaryDirectory) -> list:
+        resp = self.get_html(torrent.link)
+        soup = BeautifulSoup(resp, 'lxml')
+        image_link = soup.find('img', loading='lazy').get('src')
+        logger.debug(image_link)
+        resp = self.session.get(image_link)
+        with open(f'{tempdir}/torrent_image.jpg', 'wb') as file:
+            file.write(resp.content)
+        info = soup.find('div', id='content').find('table', id='details').find('tbody').find_all('tr')[0].text
+        return info
 
     # def __next__(self):
     #     if self.pages >= self.current_page:
