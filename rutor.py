@@ -6,11 +6,12 @@ from datetime import datetime
 from furl import furl
 
 class Torrent:
-    def __init__(self, name: str, date: str, size: str, peers: list, links: list):
+    def __init__(self, name: str, date: datetime, size: str, peers: list, link: str, links: list):
         self.name = name
         self.date = date # "dd.mm.yy"
         self.size = size
         self.peers = peers
+        self.link = link
         self.links = links
     
     def get_torrent_link(self) -> str:
@@ -79,11 +80,18 @@ class Rutor:
         for torrent in torrents_html:
             date = self.datetime_from_str(torrent.find('td').text)
             name = torrent.find_all('a')[2].text
-            size = torrent.find_all('td')[3].text
+            size = ''
+            alltd = torrent.find_all('td', align='right')
+            if len(alltd) > 1:
+                size = alltd[1].text
+            else:
+                size = alltd[0].text
+
             peers = [int(torrent.find('span', class_='green').text), int(torrent.find('span', class_='red').text)]
+            link = self.RUTOR_LINK.url + torrent.find_all('a')[2].get('href')
             links = [torrent.find_all('a')[0].get('href'), torrent.find_all('a')[1].get('href')]
-            torrent = Torrent(name, date, size, peers, links)
-            torrents.append(torrent)
+            torrent_object = Torrent(name, date, size, peers, link, links)
+            torrents.append(torrent_object)
         self.pages = pages
         self.current_page = int(self.current_link.path.segments[1])
         return torrents
