@@ -32,7 +32,14 @@ class TorrentInfoDialog(QDialog):
         image_pixmap = QPixmap(image_path)
         scaled_pixmap = image_pixmap.scaled(200, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.image_label.setPixmap(scaled_pixmap)
-        layout.addWidget(self.image_label)
+        image_layout = QHBoxLayout()
+        self.image_label.setAlignment(Qt.AlignHCenter)
+        image_layout.addWidget(self.image_label)
+
+        image_widget = QWidget()
+        image_widget.setLayout(image_layout)
+
+        layout.addWidget(image_widget)
 
         info_label = QTextEdit()
         info_label.setPlainText(info)
@@ -84,6 +91,7 @@ class TorrentDialog(QDialog):
         with tempfile.TemporaryDirectory() as tempdir:
             info = self.rutor.check_torrent_page(self.torrent, tempdir)
             info_dialog = TorrentInfoDialog(info, tempdir)
+            info_dialog.setWindowModality(Qt.WindowModal)
             info_dialog.exec()
 
     def download_torrent(self):
@@ -132,6 +140,7 @@ class MainWindow(QMainWindow):
             if item.text() == torrent.name:
                 logger.debug('Starting dialog')
                 torrentdialog = TorrentDialog(torrent, self.rutor)
+                torrentdialog.setWindowModality(Qt.WindowModal)
                 torrentdialog.exec()
 
     def search_button_clicked(self):
