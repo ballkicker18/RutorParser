@@ -13,11 +13,13 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QDialog,
     QTextEdit,
-    QScrollArea
+    QScrollArea,
+    QComboBox
 )
 from rutor import *
 import webbrowser
 import tempfile
+from config import CATEGORIES
 
 class TorrentInfoDialog(QDialog):
     def __init__(self, info: str, image_dir: tempfile.TemporaryDirectory):
@@ -107,14 +109,28 @@ class MainWindow(QMainWindow):
         self.torrents_list.itemDoubleClicked.connect(self.torrent_clicked)
         layout.addWidget(self.torrents_list)
 
+        self.categories_combobox = QComboBox()
+        categories = list(CATEGORIES.keys())
+        self.categories_combobox.addItems(categories)
+        self.categories_combobox.setCurrentIndex(0)
+        layout.addWidget(self.categories_combobox)
+
+        search_layout = QHBoxLayout()
+
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Введи название торрента")
         self.search_input.returnPressed.connect(self.search_return_pressed)
-        layout.addWidget(self.search_input)
+
+        search_layout.addWidget(self.search_input)
 
         button = QPushButton('Поиск')
         button.clicked.connect(self.search_button_clicked)
-        layout.addWidget(button)
+        search_layout.addWidget(button)
+
+        search_widget = QWidget()
+        search_widget.setLayout(search_layout)
+
+        layout.addWidget(search_widget)
 
         widget = QWidget()
         widget.setLayout(layout)
@@ -123,6 +139,7 @@ class MainWindow(QMainWindow):
         self.rutor = Rutor()
 
     def search_and_add(self):
+        self.rutor.set_category(CATEGORIES[self.categories_combobox.currentText()])
         text = self.search_input.text()
         if len(text) > 3:
             self.torrents = self.rutor.search(text)

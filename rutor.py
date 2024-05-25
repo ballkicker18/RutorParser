@@ -45,8 +45,11 @@ class Rutor:
     def get_html(self, link: str) -> str:
         logger.debug(f'Connecting to: {link}')
         resp = self.session.get(link).text
-        logger.debug(f'Returning response: {resp}')
+        #logger.debug(f'Returning response: {resp}')
         return resp
+
+    def set_category(self, num: int) -> None:
+        self.SEARCH_LINK.path.segments[2] = num
 
     def datetime_from_str(self, string: str) -> datetime:
         months = {
@@ -67,13 +70,13 @@ class Rutor:
 
     def get_results_from_resp(self, response: str) -> list:
         soup = BeautifulSoup(response, 'lxml')
-        logger.debug(soup)
+        #logger.debug(soup)
         pages = 0
-        try:
-            pages = int(soup.find('p', style='margin-top: 30px;').find_all('a', style='font-weight: bold; padding: 0 5px;')[-2].text)
-        except:
-            logger.info("Not found!")
-            return []
+        # try:
+        #     pages = int(soup.find('p', style='margin-top: 30px;').find_all('a', style='font-weight: bold; padding: 0 5px;')[-2].text)
+        # except:
+        #     logger.info("Not found!")
+        #     return []
         div_index = soup.find('div', id='index')
         table_body = div_index.find('table').find('tbody')
         torrents_html = table_body.find_all('tr')[1::]
