@@ -25,7 +25,7 @@ start.bat
 
 Клонируйте репозиторий:
 ```bash
-git clone https://github.com/ballkicker228/RutorParser
+git clone https://github.com/ballkicker18/RutorParser
 ```
 Перейдите в папку:
 ```bash
